@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Fase 6 - Arraste os Itens Corretos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-top: 20px;
+      color: #00e5ff;
+    }
+
+    p {
+      font-size: 1.1em;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding: 20px;
+    }
+
+    .area {
+      border: 3px dashed #00e5ff;
+      width: 260px;
+      min-height: 200px;
+      border-radius: 15px;
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 15px #00e5ff;
+      padding-top: 10px;
+    }
+
+    .area h3 {
+      color: #00ffc8;
+    }
+
+    .card {
+      width: 180px;
+      margin: 10px auto;
+      padding: 15px;
+      background: linear-gradient(to bottom, #1de9b6, #00bfa5);
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+      cursor: grab;
+      font-weight: bold;
+      transform: perspective(600px) rotateX(5deg);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.1) rotateX(0deg);
+      background: linear-gradient(to bottom, #64ffda, #00e5ff);
+    }
+
+    #feedback {
+      font-size: 1.2em;
+      margin-top: 20px;
+      color: #ff5252;
+    }
+
+    #congrats {
+      display: none;
+      font-size: 1.5em;
+      color: #00ffc8;
+      margin-top: 30px;
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    .next-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 1em;
+      border: none;
+      background: #00e5ff;
+      color: #000;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00e5ff;
+    }
+
+    .next-btn:hover {
+      background: #64ffda;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔌 Fase 6: Arraste os Itens Corretos</h1>
+  <p>Arraste apenas os itens de <strong>Hardware</strong> ou <strong>Componentes Eletrônicos</strong> para as áreas certas!</p>
+
+  <div class="container">
+    <div class="area" ondrop="drop(event)" ondragover="allowDrop(event)" data-category="hardware">
+      <h3>Hardware</h3>
+    </div>
+    <div class="area" ondrop="drop(event)" ondragover="allowDrop(event)" data-category="eletronico">
+      <h3>Componente Eletrônico</h3>
+    </div>
+  </div>
+
+  <div class="container" id="cards">
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="hardware" id="card1">Teclado</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="hardware" id="card2">Monitor</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="eletronico" id="card3">LED</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="eletronico" id="card4">Resistor</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="eletronico" id="card5">Sensor de Luz</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="eletronico" id="card6">Botão</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="distrator" id="card7">Camiseta</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="distrator" id="card8">Banana</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="distrator" id="card9">Mochila</div>
+  </div>
+
+  <div id="feedback"></div>
+  <div id="congrats">🎉 Excelente! Todos os itens corretos foram classificados!</div>
+  <button class="next-btn" onclick="irParaProximaFase()">👉 Próxima Fase</button>
+
+  <script>
+    let totalCorretos = 6;
+    let acertos = 0;
+
+    function allowDrop(ev) {
+      ev.preventDefault();
+    }
+
+    function drag(ev) {
+      ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+      ev.preventDefault();
+      const cardId = ev.dataTransfer.getData("text");
+      const card = document.getElementById(cardId);
+      const targetCategory = ev.currentTarget.getAttribute("data-category");
+      const cardCategory = card.getAttribute("data-category");
+      const feedback = document.getElementById("feedback");
+
+      if (cardCategory === "distrator") {
+        feedback.innerText = `❌ "${card.innerText}" não é um item de tecnologia.`;
+        vibrar();
+        return;
+      }
+
+      if (targetCategory === cardCategory) {
+        ev.currentTarget.appendChild(card);
+        feedback.innerText = "";
+        acertos++;
+        if (acertos === totalCorretos) {
+          document.getElementById("congrats").style.display = "block";
+          document.querySelector(".next-btn").style.display = "inline-block";
+        }
+      } else {
+        feedback.innerText = `❌ "${card.innerText}" não pertence a essa categoria.`;
+        vibrar();
+      }
+    }
+
+    function vibrar() {
+      if (navigator.vibrate) navigator.vibrate(200);
+    }
+
+    function irParaProximaFase() {
+      window.location.href = "fase7.html";
+    }
+  </script>
+</body>
+</html>

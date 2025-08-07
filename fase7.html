@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Fase 7 - Clique apenas nos Softwares</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      margin: 20px;
+      color: #00e5ff;
+    }
+
+    p {
+      font-size: 1.1em;
+      margin-bottom: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 160px);
+      gap: 20px;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .item {
+      background: linear-gradient(to bottom, #1de9b6, #00bfa5);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 12px #00e5ff;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .item:hover {
+      background: linear-gradient(to bottom, #64ffda, #00e5ff);
+      transform: scale(1.05);
+    }
+
+    #feedback {
+      font-size: 1.2em;
+      margin-top: 20px;
+      color: #ffc107;
+    }
+
+    #congrats {
+      display: none;
+      font-size: 1.5em;
+      margin-top: 30px;
+      color: #00ffc8;
+      text-shadow: 2px 2px #000;
+    }
+
+    .next-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 1em;
+      border: none;
+      background: #00e5ff;
+      color: #000;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00e5ff;
+    }
+
+    .next-btn:hover {
+      background: #64ffda;
+    }
+  </style>
+</head>
+<body>
+  <h1>🖱️ Fase 7: Clique Apenas nos Softwares</h1>
+  <p>Clique somente nos itens que são softwares! Um clique errado e sua pontuação zera!</p>
+
+  <div class="grid" id="grid-itens">
+    <!-- Itens são gerados por JS -->
+  </div>
+
+  <div id="feedback"></div>
+  <div id="congrats">🎉 Parabéns! Você encontrou todos os softwares!</div>
+  <button class="next-btn" onclick="proximaFase()">👉 Próxima Fase</button>
+
+  <script>
+    const itens = [
+      { nome: "Word", tipo: "software" },
+      { nome: "Mouse", tipo: "hardware" },
+      { nome: "Scratch", tipo: "software" },
+      { nome: "Teclado", tipo: "hardware" },
+      { nome: "Google Chrome", tipo: "software" },
+      { nome: "LED", tipo: "eletronico" },
+      { nome: "Monitor", tipo: "hardware" },
+      { nome: "Resistor", tipo: "eletronico" },
+      { nome: "Planilhas Google", tipo: "software" },
+      { nome: "Sensor de Luz", tipo: "eletronico" },
+      { nome: "Mochila", tipo: "distrator" },
+      { nome: "Bola", tipo: "distrator" },
+      { nome: "Garrafa", tipo: "distrator" }
+    ];
+
+    let acertos = 0;
+    const totalSoftwares = itens.filter(i => i.tipo === "software").length;
+
+    const grid = document.getElementById("grid-itens");
+    const feedback = document.getElementById("feedback");
+
+    function embaralhar(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function criarItens() {
+      embaralhar(itens).forEach(item => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerText = item.nome;
+        div.onclick = () => verificar(item, div);
+        grid.appendChild(div);
+      });
+    }
+
+    function verificar(item, el) {
+      if (item.tipo === "software") {
+        el.style.background = "#00ff90";
+        el.style.pointerEvents = "none";
+        acertos++;
+        feedback.innerText = "✅ Software correto!";
+        if (acertos === totalSoftwares) {
+          document.getElementById("congrats").style.display = "block";
+          document.querySelector(".next-btn").style.display = "inline-block";
+        }
+      } else {
+        feedback.innerText = `❌ "${item.nome}" não é um software! Sua pontuação foi zerada.`;
+        vibrar();
+        acertos = 0;
+        reiniciar();
+      }
+    }
+
+    function vibrar() {
+      if (navigator.vibrate) navigator.vibrate(300);
+    }
+
+    function reiniciar() {
+      grid.innerHTML = "";
+      setTimeout(() => {
+        feedback.innerText = "";
+        criarItens();
+      }, 1000);
+    }
+
+    function proximaFase() {
+      window.location.href = "fase8.html";
+    }
+
+    criarItens();
+  </script>
+</body>
+</html>

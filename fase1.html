@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>🎮 Missão Digital 3D - Fase 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Luckiest+Guy&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 3em;
+      color: #00e5ff;
+      margin-top: 30px;
+      text-shadow: 2px 2px 5px #000;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding: 20px;
+    }
+
+    .area {
+      border: 3px dashed #00e5ff;
+      width: 220px;
+      min-height: 180px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 15px #00e5ff;
+      transition: transform 0.2s ease;
+    }
+
+    .area:hover {
+      transform: scale(1.05);
+    }
+
+    .area h3 {
+      margin-top: 10px;
+      color: #00ffc8;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    .card {
+      width: 160px;
+      margin: 10px auto;
+      padding: 15px;
+      background: linear-gradient(to bottom, #1de9b6, #00bfa5);
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+      cursor: grab;
+      font-weight: bold;
+      transform: perspective(600px) rotateX(5deg);
+      transition: transform 0.3s ease, background 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.1) perspective(600px) rotateX(0deg);
+      background: linear-gradient(to bottom, #64ffda, #00e5ff);
+    }
+
+    #progress {
+      margin-top: 30px;
+      height: 25px;
+      background-color: #111;
+      border: 2px solid #00e5ff;
+      border-radius: 15px;
+      overflow: hidden;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 10px #00e5ff;
+    }
+
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #00e5ff, #00ffc8);
+      transition: width 0.3s ease;
+    }
+
+    #feedback {
+      font-size: 1em;
+      margin-top: 20px;
+      color: #ff5252;
+    }
+
+    #congrats {
+      display: none;
+      margin-top: 30px;
+      font-size: 2em;
+      color: #00ffc8;
+      text-shadow: 2px 2px #000;
+    }
+
+    #nextBtn {
+      display: none;
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 1.1em;
+      border: none;
+      background: #00e5ff;
+      color: #000;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 12px #00e5ff;
+      transition: all 0.3s ease;
+    }
+
+    #nextBtn:hover {
+      background: #64ffda;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 Missão Digital 3D</h1>
+  <p>Arraste os componentes para a categoria correta!</p>
+
+  <div class="container">
+    <div class="area" ondrop="drop(event)" ondragover="allowDrop(event)" data-category="entrada">
+      <h3>Entrada</h3>
+    </div>
+    <div class="area" ondrop="drop(event)" ondragover="allowDrop(event)" data-category="saida">
+      <h3>Saída</h3>
+    </div>
+    <div class="area" ondrop="drop(event)" ondragover="allowDrop(event)" data-category="processamento">
+      <h3>Processamento</h3>
+    </div>
+    <div class="area" ondrop="drop(event)" ondragover="allowDrop(event)" data-category="armazenamento">
+      <h3>Armazenamento</h3>
+    </div>
+  </div>
+
+  <div class="container" id="cards">
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="entrada" id="card1">Teclado</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="entrada" id="card2">Mouse</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="saida" id="card3">Monitor</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="saida" id="card4">Caixa de Som</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="processamento" id="card5">Processador</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="armazenamento" id="card6">HD</div>
+    <div class="card" draggable="true" ondragstart="drag(event)" data-category="armazenamento" id="card7">Pendrive</div>
+  </div>
+
+  <div id="progress">
+    <div id="progress-bar"></div>
+  </div>
+
+  <div id="feedback"></div>
+  <div id="congrats">🎉 Parabéns! Você completou a missão digital! 🎉</div>
+
+  <button id="nextBtn" onclick="proximaFase()">👉 Ir para a Fase 2</button>
+
+  <script>
+    let total = 7;
+    let acertos = 0;
+
+    function allowDrop(ev) {
+      ev.preventDefault();
+    }
+
+    function drag(ev) {
+      ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+      ev.preventDefault();
+      const cardId = ev.dataTransfer.getData("text");
+      const card = document.getElementById(cardId);
+      const targetCategory = ev.currentTarget.getAttribute("data-category");
+      const cardCategory = card.getAttribute("data-category");
+      const feedback = document.getElementById("feedback");
+
+      if (targetCategory === cardCategory) {
+        ev.currentTarget.appendChild(card);
+        feedback.innerText = '';
+        acertos++;
+        updateProgress();
+        if (acertos === total) {
+          document.getElementById("congrats").style.display = 'block';
+          document.getElementById("nextBtn").style.display = 'inline-block';
+        }
+      } else {
+        feedback.innerText = `❌ "${card.innerText}" não pertence aqui! Tente novamente.`;
+        vibrar();
+      }
+    }
+
+    function updateProgress() {
+      let percent = (acertos / total) * 100;
+      document.getElementById("progress-bar").style.width = percent + "%";
+    }
+
+    function vibrar() {
+      if (navigator.vibrate) {
+        navigator.vibrate(300);
+      }
+    }
+
+    function proximaFase() {
+      window.location.href = "fase2.html";
+    }
+  </script>
+</body>
+</html>

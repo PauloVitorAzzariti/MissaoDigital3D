@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Fase 4 - Memória Tecnológica</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin: 20px;
+      color: #00e5ff;
+    }
+
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 120px);
+      gap: 15px;
+      justify-content: center;
+      padding: 30px 0;
+    }
+
+    .card {
+      width: 120px;
+      height: 120px;
+      background: #00bfa5;
+      border-radius: 15px;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00e5ff;
+      transition: 0.3s;
+      font-weight: bold;
+      transform: perspective(600px) rotateY(0deg);
+    }
+
+    .card.open, .card.matched {
+      background: #64ffda;
+      color: #000;
+      transform: rotateY(360deg);
+    }
+
+    .card.matched {
+      background: #1de9b6;
+      box-shadow: 0 0 20px #00e676;
+    }
+
+    #congrats {
+      display: none;
+      margin-top: 30px;
+      font-size: 1.5em;
+      color: #00ffc8;
+      text-shadow: 2px 2px #000;
+    }
+
+    .next-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      background: #00e5ff;
+      color: #000;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00e5ff;
+    }
+
+    .next-btn:hover {
+      background: #64ffda;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Fase 4: Jogo da Memória Tecnológica</h1>
+  <div id="game-board"></div>
+  <div id="congrats">🎉 Muito bem! Você completou todos os pares!</div>
+  <button class="next-btn" onclick="proximaFase()">👉 Próxima Fase</button>
+
+  <script>
+    const pares = [
+      ["Teclado", "Entrada"],
+      ["Mouse", "Entrada"],
+      ["Monitor", "Saída"],
+      ["Impressora", "Saída"],
+      ["Processador", "Processamento"],
+      ["HD", "Armazenamento"]
+    ];
+
+    let cartas = [];
+    let selecionadas = [];
+    let acertos = 0;
+
+    function embaralhar(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function criarTabuleiro() {
+      const board = document.getElementById("game-board");
+      cartas = embaralhar(pares.flat());
+      cartas.forEach((texto, index) => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.setAttribute("data-texto", texto);
+        card.setAttribute("data-index", index);
+        card.onclick = () => virarCarta(card);
+        card.innerText = texto;
+        board.appendChild(card);
+      });
+    }
+
+    function virarCarta(card) {
+      if (card.classList.contains("matched") || card.classList.contains("open")) return;
+      if (selecionadas.length === 2) return;
+
+      card.classList.add("open");
+      selecionadas.push(card);
+
+      if (selecionadas.length === 2) {
+        const [c1, c2] = selecionadas;
+        const t1 = c1.getAttribute("data-texto");
+        const t2 = c2.getAttribute("data-texto");
+
+        if (éParValido(t1, t2)) {
+          c1.classList.add("matched");
+          c2.classList.add("matched");
+          acertos++;
+          if (acertos === pares.length) {
+            document.getElementById("congrats").style.display = "block";
+            document.querySelector(".next-btn").style.display = "inline-block";
+          }
+          selecionadas = [];
+        } else {
+          setTimeout(() => {
+            c1.classList.remove("open");
+            c2.classList.remove("open");
+            selecionadas = [];
+          }, 1000);
+        }
+      }
+    }
+
+    function éParValido(a, b) {
+      return pares.some(par => (par[0] === a && par[1] === b) || (par[0] === b && par[1] === a));
+    }
+
+    function proximaFase() {
+      window.location.href = "fase5.html";
+    }
+
+    criarTabuleiro();
+  </script>
+</body>
+</html>

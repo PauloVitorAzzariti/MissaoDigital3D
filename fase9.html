@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Fase 9 - Quiz com Explicações</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-size: 2.3em;
+      margin-top: 20px;
+      color: #00e5ff;
+    }
+
+    #quiz-box {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      width: 80%;
+      max-width: 700px;
+      margin: 20px auto;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #00e5ff;
+    }
+
+    .question {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+
+    .option {
+      background: linear-gradient(to bottom, #1de9b6, #00bfa5);
+      padding: 12px;
+      margin: 10px auto;
+      width: 90%;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .option:hover {
+      background: linear-gradient(to bottom, #64ffda, #00e5ff);
+      transform: scale(1.03);
+    }
+
+    #feedback {
+      font-size: 1.1em;
+      margin-top: 20px;
+      color: #ffc107;
+    }
+
+    #progress {
+      margin: 30px auto 10px;
+      height: 20px;
+      width: 80%;
+      border-radius: 10px;
+      background: #111;
+      border: 2px solid #00e5ff;
+    }
+
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #00e5ff, #00ffc8);
+      transition: 0.5s;
+    }
+
+    #congrats {
+      display: none;
+      font-size: 1.5em;
+      color: #00ffc8;
+      margin-top: 30px;
+      text-shadow: 2px 2px #000;
+    }
+
+    .next-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 1em;
+      border: none;
+      background: #00e5ff;
+      color: #000;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00e5ff;
+    }
+
+    .next-btn:hover {
+      background: #64ffda;
+    }
+  </style>
+</head>
+<body>
+  <h1>📘 Fase 9: Aprenda com o Erro!</h1>
+  <div id="progress"><div id="progress-bar"></div></div>
+
+  <div id="quiz-box">
+    <div class="question" id="pergunta">Carregando...</div>
+    <div class="option" onclick="responder(this)"></div>
+    <div class="option" onclick="responder(this)"></div>
+    <div class="option" onclick="responder(this)"></div>
+    <div class="option" onclick="responder(this)"></div>
+    <div id="feedback"></div>
+  </div>
+
+  <div id="congrats">🎉 Você concluiu o quiz com sucesso!</div>
+  <button class="next-btn" onclick="proximaFase()">👉 Fase Final</button>
+
+  <script>
+    const perguntas = [
+      {
+        pergunta: "O que é um LED?",
+        opcoes: ["Um tipo de cabo", "Um sensor", "Um emissor de luz", "Um botão eletrônico"],
+        correta: "Um emissor de luz",
+        explicacao: "LED significa 'Diodo Emissor de Luz', usado para iluminar."
+      },
+      {
+        pergunta: "Qual a função do resistor?",
+        opcoes: ["Aumentar a tensão", "Controlar a corrente", "Armazenar energia", "Gerar som"],
+        correta: "Controlar a corrente",
+        explicacao: "Resistores controlam o fluxo de corrente elétrica em um circuito."
+      },
+      {
+        pergunta: "O que o botão faz em um circuito?",
+        opcoes: ["Armazena dados", "Detecta luz", "Ativa uma função", "Diminui o brilho"],
+        correta: "Ativa uma função",
+        explicacao: "O botão é usado para iniciar ou interromper uma ação."
+      },
+      {
+        pergunta: "O que é Google Chrome?",
+        opcoes: ["Hardware", "Sistema Operacional", "Sensor", "Software"],
+        correta: "Software",
+        explicacao: "É um navegador de internet, ou seja, um programa (software)."
+      },
+      {
+        pergunta: "Sensor de luz serve para...",
+        opcoes: ["Controlar áudio", "Detectar iluminação", "Criar arquivos", "Escrever textos"],
+        correta: "Detectar iluminação",
+        explicacao: "Ele detecta a presença ou ausência de luz em um ambiente."
+      }
+    ];
+
+    let atual = 0;
+    let acertos = 0;
+
+    const elPergunta = document.getElementById("pergunta");
+    const elOpcoes = document.querySelectorAll(".option");
+    const elFeedback = document.getElementById("feedback");
+    const elBarra = document.getElementById("progress-bar");
+
+    function carregarPergunta() {
+      const p = perguntas[atual];
+      elPergunta.innerText = p.pergunta;
+      elOpcoes.forEach((op, i) => {
+        op.innerText = p.opcoes[i];
+        op.setAttribute("data-correta", p.opcoes[i] === p.correta);
+        op.setAttribute("data-explicacao", p.explicacao);
+      });
+    }
+
+    function responder(el) {
+      const correta = el.getAttribute("data-correta") === "true";
+      const explicacao = el.getAttribute("data-explicacao");
+
+      if (correta) {
+        elFeedback.innerText = "✅ Correto!";
+        acertos++;
+        atualizarBarra();
+        atual++;
+        if (atual < perguntas.length) {
+          setTimeout(() => {
+            elFeedback.innerText = "";
+            carregarPergunta();
+          }, 1200);
+        } else {
+          finalizarQuiz();
+        }
+      } else {
+        elFeedback.innerText = `❌ Errado! 💡 ${explicacao}`;
+        vibrar();
+      }
+    }
+
+    function atualizarBarra() {
+      const pct = (acertos / perguntas.length) * 100;
+      elBarra.style.width = pct + "%";
+    }
+
+    function vibrar() {
+      if (navigator.vibrate) navigator.vibrate(200);
+    }
+
+    function finalizarQuiz() {
+      document.getElementById("quiz-box").style.display = "none";
+      document.getElementById("congrats").style.display = "block";
+      document.querySelector(".next-btn").style.display = "inline-block";
+    }
+
+    function proximaFase() {
+      window.location.href = "fase10.html";
+    }
+
+    carregarPergunta();
+  </script>
+</body>
+</html>

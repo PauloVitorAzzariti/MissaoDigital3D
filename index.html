@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Missão Digital - Início</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1a2980);
+      background-size: 400% 400%;
+      animation: gradient 12s ease infinite;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .logo {
+      width: 200px;
+      margin-bottom: 30px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    h1 {
+      font-size: 2.8em;
+      color: #00e5ff;
+      text-shadow: 2px 2px 8px #000;
+    }
+
+    p {
+      font-size: 1.2em;
+      max-width: 600px;
+      margin: 20px auto 40px;
+      color: #ccc;
+    }
+
+    .start-btn {
+      background: #00e5ff;
+      color: #000;
+      border: none;
+      padding: 16px 36px;
+      border-radius: 12px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00e5ff80;
+      transition: 0.3s ease;
+    }
+
+    .start-btn:hover {
+      background: #64ffda;
+      transform: scale(1.05);
+      box-shadow: 0 0 30px #64ffda;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGO CENTRALIZADA -->
+  <img src="logo.png" alt="Logo do Curso" class="logo" />
+
+  <!-- TÍTULO E DESCRIÇÃO -->
+  <h1>Missão Digital</h1>
+  <p>Prepare-se para embarcar em uma jornada interativa cheia de desafios, onde você vai aprender brincando sobre tecnologia, hardware, software e componentes eletrônicos!</p>
+
+  <!-- BOTÃO DE INICIAR -->
+  <button class="start-btn" onclick="iniciar()">🎮 Iniciar Missão</button>
+
+  <script>
+    function iniciar() {
+      window.location.href = "fase1.html";
+    }
+  </script>
+</body>
+</html>
